@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Your Medicines - Dawa-Ware</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        .btn-gradient {
+            display: inline-block;
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            padding: 12px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(90deg, #ec4899, #f97316);
+            transform: scale(1.05);
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+        }
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-item:hover {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+        }
+        .footer {
+            background-color: #1f2937; /* Dark Gray */
+            color: white;
+            padding: 20px 0;
+        }
+        .footer a {
+            color: #d1d5db;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #fbbf24; /* Yellow */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 py-4 shadow-md">
+        <ul class="flex space-x-10 justify-center font-serif text-white text-lg">
+            <li class="nav-item"><a href="./index.html">Home</a></li>
+            <li class="nav-item"><a href="./features.html">Features</a></li>
+            <li class="nav-item"><a href="./login.html">Log In</a></li>
+            <li class="nav-item"><a href="./signup.html">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-purple-700 text-white py-16 text-center">
+        <div class="container mx-auto">
+            <h1 class="text-5xl font-bold mb-4">Test Your Medicines</h1>
+            <p class="text-xl mb-6">Use your camera to capture an image of your medicine or upload a file.</p>
+        </div>
+    </header>
+
+    <!-- Medicine Testing Form -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto">
+            <div class="max-w-md mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+                <form id="medicine-form">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Upload or Capture Your Medicine</h2>
+
+                    <!-- Camera Capture -->
+                    <div class="mb-6 text-center">
+                        <button type="button" id="open-camera" class="btn-gradient">Open Camera</button>
+                        <div class="mt-4">
+                            <video id="video" class="w-full h-60 border border-gray-300 rounded-lg mb-4" autoplay></video>
+                            <canvas id="canvas" class="hidden"></canvas>
+                            <button type="button" id="capture" class="btn-gradient">Capture Photo</button>
+                            <img id="captured-image" class="mt-4 hidden" />
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="mb-6">
+                        <label for="medicine-image" class="block text-lg font-medium text-gray-700 mb-2">Or Upload Medicine Image</label>
+                        <input type="file" id="medicine-image" name="medicine-image" accept="image/*" class="w-full border-gray-300 rounded-lg py-2 px-4">
+                        <p class="text-gray-600 text-sm mt-2">Use your device's camera or select a file from your device.</p>
+                    </div>
+
+                    <!-- Image Description and OCR Result -->
+                    <!-- Image Description and OCR Result -->
+                    <div id="image-and-text" class="text-center hidden">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Captured/Uploaded Image:</h3>
+                        <img id="ocr-image" class="w-full max-w-sm mx-auto mb-4" />
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Extracted Text:</h4>
+                        <p id="ocr-text" class="text-gray-700">Loading...</p>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">LLaMA API Response:</h4>
+                        <p id="llama-response" class="text-gray-700">Loading...</p>
+                    </div>
+
+
+                    <div class="text-center">
+                        <button type="submit" class="btn-gradient">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto text-center">
+            <p class="text-sm mb-4">&copy; 2024 Dawa-Ware. All rights reserved.</p>
+            <ul class="flex justify-center space-x-6 mb-4">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./features.html">Features</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+            <p class="text-sm">Follow us on 
+                <a href="https://twitter.com" target="_blank">Twitter</a>, 
+                <a href="https://facebook.com" target="_blank">Facebook</a>, 
+                <a href="https://linkedin.com" target="_blank">LinkedIn</a>.
+            </p>
+        </div>
+
+
+
+
+    </footer>
+
+    <!-- JavaScript for Camera Functionality and OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.5"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openCameraButton = document.getElementById('open-camera');
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const captureButton = document.getElementById('capture');
+            const fileInput = document.getElementById('medicine-image');
+            const ocrImage = document.getElementById('ocr-image');
+            const ocrText = document.getElementById('ocr-text');
+            const llamaResponse = document.getElementById('llama-response'); // For displaying LLaMA response
+            const imageAndTextSection = document.getElementById('image-and-text');
+    
+            // Open camera and start video stream
+            openCameraButton.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    video.srcObject = stream;
+                    video.play();
+                } catch (err) {
+                    console.error('Error accessing camera:', err);
+                }
+            });
+    
+            // Capture photo from video
+            captureButton.addEventListener('click', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/jpeg');
+                ocrImage.src = imageData;
+                imageAndTextSection.classList.remove('hidden');
+                analyzeImage(imageData);
+            });
+    
+            // Handle file upload
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageData = e.target.result;
+                        ocrImage.src = imageData;
+                        imageAndTextSection.classList.remove('hidden');
+                        analyzeImage(imageData);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+    
+            // Function to analyze image using Tesseract.js
+            function analyzeImage(imageData) {
+                ocrText.textContent = 'Extracting text...';
+                Tesseract.recognize(imageData, 'eng', {
+                    logger: (m) => console.log(m), // Log progress
+                }).then(({ data: { text } }) => {
+                    ocrText.textContent = text ? text : 'No text found.';
+                    fetchLlamaResponse(text); // Fetch LLaMA response after OCR extraction
+                }).catch((err) => {
+                    ocrText.textContent = 'Error during OCR processing.';
+                    console.error(err);
+                });
+            }
+    
+            // Function to fetch LLaMA API response
+            function fetchLlamaResponse(extractedText) {
+                llamaResponse.textContent = 'Fetching response from LLaMA API...';
+                fetch('/llama-api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: extractedText }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    llamaResponse.textContent = data.response || 'No response from LLaMA API.';
+                })
+                .catch((err) => {
+                    llamaResponse.textContent = 'Error fetching LLaMA API response.';
+                    console.error(err);
+                });
+            }
+        });
+    </script>
+    
+
+</body>
+</html>
