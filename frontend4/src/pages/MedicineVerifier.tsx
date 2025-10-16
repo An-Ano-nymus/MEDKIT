@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
 import { Camera, Upload, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import Webcam from 'react-webcam';
-import Sidebar from '../components/dashboard/Sidebar';
-import DashboardHeader from '../components/dashboard/DashboardHeader';
 
 const MedicineVerifier: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [result, setResult] = useState<null | { isAuthentic: boolean; details: string }>(null);
   const [loading, setLoading] = useState(false);
-
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const closeSidebar = () => setSidebarOpen(false);
 
   const handleScan = async (imageData: string | null) => {
     if (!imageData) return;
@@ -41,13 +34,7 @@ const MedicineVerifier: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader toggleSidebar={toggleSidebar} />
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} closeSidebar={closeSidebar} />
-
-        <main className="flex-1 p-4 lg:p-6">
-          <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900">Medicine Authenticity Verifier</h1>
               <p className="text-gray-600">
@@ -92,7 +79,6 @@ const MedicineVerifier: React.FC = () => {
                   <Webcam
                     className="w-full rounded-lg"
                     screenshotFormat="image/jpeg"
-                    onUserMedia={() => setIsScanning(true)}
                   />
                   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                     <button
@@ -139,10 +125,7 @@ const MedicineVerifier: React.FC = () => {
                 </div>
               )}
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
+  </div>
   );
 };
 

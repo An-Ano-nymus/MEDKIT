@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import DashboardHeader from '../components/dashboard/DashboardHeader';
-import Sidebar from '../components/dashboard/Sidebar';
 
 interface Doctor {
   _id: string;
@@ -128,12 +126,7 @@ const Appointments: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader sidebarOpen={false} setSidebarOpen={() => {}} />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-4 lg:p-6">
-          <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
             <h1 className="text-2xl font-bold text-gray-800">Book an Appointment</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -280,10 +273,7 @@ const Appointments: React.FC = () => {
                 {bookingStatus && <p className="text-sm text-blue-700 mt-2">{bookingStatus}</p>}
               </div>
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
+  </div>
   );
 };
 

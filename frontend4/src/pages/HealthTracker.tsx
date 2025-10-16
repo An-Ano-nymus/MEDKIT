@@ -50,6 +50,9 @@ const HealthTracker: React.FC = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <div className="mb-4 p-3 rounded bg-yellow-50 text-yellow-800 text-sm">
+        Note: This page uses demo data. Wire to real metrics API to enable live tracking.
+      </div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Health Tracker</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

@@ -67,6 +67,9 @@ const Store: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-4 p-3 rounded bg-yellow-50 text-yellow-800 text-sm">
+          Note: Store uses sample products. Connect to your catalog API to load real items.
+        </div>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Medical Store</h1>

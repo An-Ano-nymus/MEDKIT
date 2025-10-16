@@ -1,40 +1,30 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
+import { useDoctorAuth } from '../../context/useDoctorAuth';
 
 interface DoctorLoginFormProps {
   onSignupClick: () => void;
 }
-// const navigate=useNavigate();
-
-const DoctorLoginForm: React.FC<DoctorLoginFormProps> = ({ onSignupClick }) => {
+const DoctorLoginForm: React.FC<DoctorLoginFormProps> = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useDoctorAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/doctor/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const result = await login(email, password);
+      if (result.success) {
         setStatus('✅ Login successful!');
-        // localStorage.setItem('doctor', JSON.stringify(data.doctor));
-        window.location.href = 'http://localhost:5174/dashboard';
-        // You can also store doctor info in context/localStorage here
-        console.log(data.doctor); // doctor info returned from backend
+        navigate('/doctor');
       } else {
-        setStatus(`❌ ${data.error || 'Login failed'}`);
+        setStatus(`❌ ${result.error || 'Login failed'}`);
       }
     } catch (err) {
       console.error('❌ Login error:', err);

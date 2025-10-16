@@ -21,7 +21,7 @@ def img_to_string(image_path):
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     text = pytesseract.image_to_string(gray, lang='eng')
-    print(text)
+    # print(text)
     return text
 
 
@@ -48,7 +48,7 @@ def pdf_to_text(pdf_path):
 
         os.remove(temp_img_path)
     
-    print(text_all)
+    # print(text_all)
     return text_all
 
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface AppointmentItemProps {
   title: string;
@@ -37,54 +38,59 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({
   );
 };
 
+type AppointmentDisplay = { id: string; title: string; doctor: string; date: string; time: string; location: string };
 const AppointmentsCard: React.FC = () => {
-  const appointments = [
-    {
-      id: '1',
-      title: 'Annual Physical Checkup',
-      doctor: 'Sarah Johnson',
-      date: 'Jun 15, 2025',
-      time: '10:00 AM',
-      location: 'Main Clinic'
-    },
-    {
-      id: '2',
-      title: 'Dental Cleaning',
-      doctor: 'Michael Chen',
-      date: 'Jun 22, 2025',
-      time: '2:30 PM',
-      location: 'Dental Center'
-    },
-    {
-      id: '3',
-      title: 'Eye Examination',
-      doctor: 'Emily Rodriguez',
-      date: 'Jul 05, 2025',
-      time: '9:15 AM',
-      location: 'Vision Care'
-    }
-  ];
+  const [appointments, setAppointments] = React.useState<AppointmentDisplay[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch('http://localhost:5000/appointments/user', { credentials: 'include' });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed');
+        // Map to display format; title is not in model, so construct a friendly title
+        const mapped: AppointmentDisplay[] = (data.appointments || []).map((a: { _id: string; doctor: string; date: string; time: string }) => ({
+          id: a._id,
+          title: 'Appointment',
+          doctor: a.doctor,
+          date: a.date,
+          time: a.time,
+          location: 'Medical Center'
+        }));
+        // Show only next 3
+        setAppointments(mapped.slice(0, 3));
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Failed to load';
+        setError(msg);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h2>
-        <button className="text-sm text-blue-600 hover:text-blue-800">
+        <Link to="/appointments" className="text-sm text-blue-600 hover:text-blue-800">
           Schedule new
-        </button>
+        </Link>
       </div>
       <div className="divide-y divide-gray-100">
-        {appointments.length > 0 ? (
+        {loading ? (
+          <p className="py-4 text-sm text-gray-500">Loading...</p>
+        ) : error ? (
+          <p className="py-4 text-sm text-red-600">{error}</p>
+        ) : appointments.length > 0 ? (
           appointments.map((appointment) => (
-            <AppointmentItem 
-              key={appointment.id} 
-              {...appointment} 
-            />
+            <AppointmentItem key={appointment.id} {...appointment} />
           ))
         ) : (
-          <p className="py-4 text-sm text-gray-500">
-            No upcoming appointments. Schedule your next visit.
-          </p>
+          <p className="py-4 text-sm text-gray-500">No upcoming appointments. Schedule your next visit.</p>
         )}
       </div>
     </div>

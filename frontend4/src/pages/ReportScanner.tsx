@@ -1,19 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { Camera, RotateCw, Upload, FileText } from 'lucide-react';
 import Webcam from 'react-webcam';
-import DashboardHeader from '../components/dashboard/DashboardHeader';
-import Sidebar from '../components/dashboard/Sidebar';
 
 const ReportScanner: React.FC = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
   const webcamRef = useRef<Webcam | null>(null);
-
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const closeSidebar = () => setSidebarOpen(false);
 
   const handleCapture = React.useCallback(() => {
     if (webcamRef.current) {
@@ -47,14 +42,12 @@ const handleAnalyzeImage = async (imageDataUrl: string | null) => {
     }
 
     // Streaming output (if supported by backend)
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let resultText = '';
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder('utf-8');
 
     while (reader) {
       const { value, done } = await reader.read();
       if (done) break;
-      resultText += decoder.decode(value);
       setResults(prev => (prev ?? '') + decoder.decode(value));
     }
 
@@ -92,14 +85,12 @@ const handleAnalyzeFile = async (file: File) => {
       throw new Error('Failed to analyze the report');
     }
 
-    const reader = response.body?.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let resultText = '';
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder('utf-8');
 
     while (reader) {
       const { value, done } = await reader.read();
       if (done) break;
-      resultText += decoder.decode(value);
       setResults(prev => (prev ?? '') + decoder.decode(value));
     }
 
@@ -132,16 +123,28 @@ const handleAnalyzeFile = async (file: File) => {
   URL.revokeObjectURL(url); // cleanup
 };
 
+  const handleSave = async () => {
+    if (!results) return;
+    try {
+      setSaveStatus('Saving...');
+      const res = await fetch('http://localhost:5000/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ fileName: 'report', summary: results })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Failed');
+      setSaveStatus('Saved to Documents');
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Failed to save';
+      setSaveStatus(msg);
+    }
+  };
+
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader toggleSidebar={toggleSidebar} />
-      
-      <div className="flex">
-        <Sidebar isOpen={sidebarOpen} closeSidebar={closeSidebar} />
-        
-        <main className="flex-1 p-4 lg:p-6">
-          <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <h1 className="text-2xl font-bold text-gray-900">Medical Report Scanner</h1>
               <p className="text-gray-600">Scan your medical reports for instant analysis</p>
@@ -229,23 +232,17 @@ const handleAnalyzeFile = async (file: File) => {
                       <pre className="whitespace-pre-wrap text-sm text-gray-700 font-mono bg-white p-4 rounded-md border border-gray-200">
                         {results}
                       </pre>
-                      <div className="mt-4 flex justify-end">
-                        <button
-  onClick={handleDownload}
-  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
->
-  Download Report
-</button>
+                      <div className="mt-4 flex items-center justify-end space-x-4">
+                        <button onClick={handleSave} className="text-blue-600 hover:text-blue-800 text-sm font-medium">Save to Documents</button>
+                        <button onClick={handleDownload} className="text-blue-600 hover:text-blue-800 text-sm font-medium">Download Report</button>
+                        {saveStatus && <span className="text-xs text-gray-500">{saveStatus}</span>}
                       </div>
                     </div>
                   )}
                 </div>
               )}
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
+  </div>
   );
 };
 

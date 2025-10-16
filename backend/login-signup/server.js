@@ -11,6 +11,8 @@ const appointmentRoute=require('./routes/appointmentRoute');
 const doctorRoute= require('./routes/doctorRoute');
 const otpRoute=require('./routes/otpRoute');
 const authDoctorRoutes = require('./routes/authDoctor');
+const reportRoute = require('./routes/reportRoute');
+const protectedUploads = require('./routes/protectedUploads');
 
 
 
@@ -20,10 +22,10 @@ connectDB();
 const app = express();
 
 
-// ✅ CORS: allow credentials and origin from frontend
+// ✅ CORS: allow credentials, restrict to unified frontend (5173)
 app.use(cors({
-  origin: 'http://localhost:5173', // Your React frontend
-  credentials: true
+    origin: ['http://localhost:5173'],
+    credentials: true
 }));
 
 // ✅ Body parser
@@ -49,6 +51,9 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }));
+
+// Serve uploads statically for debug
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // ✅ Routes
@@ -104,6 +109,8 @@ app.use('/api/doctors', doctorRoute);
 app.use('/api/otp', otpRoute);
 app.use('/appointments',appointmentRoute);
 app.use('/api/doctor', authDoctorRoutes);
+app.use('/api/reports', reportRoute);
+app.use('/api/protected-uploads', protectedUploads);
 
 // app.use('/api/doctor', require('./routes/authDoctor'));
 

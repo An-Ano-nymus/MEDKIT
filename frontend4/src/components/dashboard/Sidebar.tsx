@@ -31,13 +31,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, closeSidebar }) => {
   const navItems: NavItem[] = [
     { to: '/dashboard', icon: <Home size={20} />, label: 'Dashboard' },
     { to: '/report-scanner', icon: <ScanLine size={20} />, label: 'Report Scanner' },
+  { to: '/documents', icon: <FileText size={20} />, label: 'Documents' },
     { to: '/medicine-verifier', icon: <Pill size={20} />, label: 'Medicine Verify' },
     { to: '/medicine-analyzer', icon: <Stethoscope size={20} />, label: 'Medicine Analysis' },
     { to: '/store', icon: <ShoppingBag size={20} />, label: 'Store' },
     { to: '/prescription-validator', icon: <FileText size={20} />, label: 'Prescription Check' },
     { to: '/chat', icon: <MessageSquare size={20} />, label: 'Chat Assistant' },
     { to: '/health-tracker', icon: <Activity size={20} />, label: 'Health Tracker' },
-    { to: '/appointments', icon: <Calendar size={20} />, label: 'Appointments' },
+  { to: '/appointments', icon: <Calendar size={20} />, label: 'Book Appointment' },
+  { to: '/my-appointments', icon: <Calendar size={20} />, label: 'My Appointments' },
     { to: '/emergency', icon: <AlertTriangle size={20} />, label: 'Emergency' },
     { to: '/translate', icon: <Languages size={20} />, label: 'Translate Reports' },
   ];

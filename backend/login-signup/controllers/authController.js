@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.signup = async (req, res) => {
@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
     const user = new User({ name, email, password });
     await user.save();
 
-    res.status(201).json({ message: 'Signup successful' });
+  res.status(201).json({ message: 'Signup successful' });
   } catch (error) {
     console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -40,6 +40,11 @@ exports.login = async (req, res) => {
 
     // Optional: Generate JWT token
     const token = jwt.sign({ id: user._id, email: user.email }, 'your_jwt_secret', { expiresIn: '1h' });
+
+    // Set session for cookie-based auth
+    if (req.session) {
+      req.session.userId = user._id.toString();
+    }
 
     res.status(200).json({
       message: 'Login successful',

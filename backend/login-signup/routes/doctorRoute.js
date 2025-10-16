@@ -1,8 +1,10 @@
 const express = require('express');
 const Doctor = require('../models/Doctor');
+const doctorAuth = require('../middlewares/doctorAuth');
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+// Create doctor - protect behind doctorAuth (could be admin-only in future)
+router.post('/', doctorAuth, async (req, res) => {
   try {
     const doctor = await Doctor.create(req.body);
     res.status(201).json(doctor);

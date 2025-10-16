@@ -24,8 +24,9 @@ def LLM_ANS(user_prompt):
     client = Cerebras(api_key=API_KEY)
     try:
         chat_completion = client.chat.completions.create(
-            model="llama3.1-8b",
+            model="llama-4-scout-17b-16e-instruct",
             messages=[{"role": "user", "content": user_prompt}],
+            stream=True,
         )
         print(chat_completion.choices[0].message.content)
 
