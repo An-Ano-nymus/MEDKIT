@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import { fetchWithCredentials } from '../../utils/api';
+import { fetchWithCredentials, API_ORIGIN } from '../../utils/api';
 
 export function DoctorDocuments() {
 	const [degreeUrl, setDegreeUrl] = useState<string | null>(null);
@@ -16,10 +16,11 @@ export function DoctorDocuments() {
 	}, []);
 
 	const pathFromBackend = (p: string) => {
-		// backend stores relative path from server file system; expose via /uploads
-		const idx = p.lastIndexOf('uploads');
-		const rel = idx >= 0 ? p.slice(idx) : p;
-		return `http://localhost:5000/${rel.replace(/\\/g, '/')}`;
+		const normalized = p.replace(/\\/g, '/');
+		const marker = 'uploads/';
+		const idx = normalized.lastIndexOf(marker);
+		const rel = idx >= 0 ? normalized.slice(idx + marker.length) : normalized;
+		return `${API_ORIGIN}/api/protected-uploads/${rel}`;
 	};
 
 		return (

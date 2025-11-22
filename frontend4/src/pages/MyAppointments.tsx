@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_ORIGIN } from '../utils/api';
 
 interface Appt { _id: string; doctor: string; date: string; time: string; }
 
@@ -16,7 +17,7 @@ const MyAppointments: React.FC = () => {
   const load = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/appointments/user', { credentials: 'include' });
+      const res = await fetch(`${API_ORIGIN}/appointments/user`, { credentials: 'include' });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Failed to load appointments');
       setItems(data.appointments || []);
@@ -36,7 +37,7 @@ const MyAppointments: React.FC = () => {
 
   const cancel = async (id: string) => {
     if (!confirm('Cancel this appointment?')) return;
-    const res = await fetch(`http://localhost:5000/appointments/${id}`, { method: 'DELETE', credentials: 'include' });
+    const res = await fetch(`${API_ORIGIN}/appointments/${id}`, { method: 'DELETE', credentials: 'include' });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
       alert(data.error || 'Failed to cancel');
@@ -53,7 +54,7 @@ const MyAppointments: React.FC = () => {
 
   const saveReschedule = async () => {
     if (!rescheduleId) return;
-    const res = await fetch(`http://localhost:5000/appointments/${rescheduleId}`, {
+    const res = await fetch(`${API_ORIGIN}/appointments/${rescheduleId}`, {
       method: 'PUT',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, Languages, FileText, Download } from 'lucide-react';
+import { API_ORIGIN } from '../utils/api';
 
 const ReportTranslator: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -40,7 +41,7 @@ const handleTranslate = async () => {
   formData.append('sourceLang', 'en'); // hardcoded for now
 
   try {
-    const response = await fetch('http://localhost:5000/translate', {
+    const response = await fetch(`${API_ORIGIN}/translate`, {
       method: 'POST',
       body: formData,
     });

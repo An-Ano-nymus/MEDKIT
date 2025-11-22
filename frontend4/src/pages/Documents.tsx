@@ -1,5 +1,6 @@
 import React from 'react';
 import { FileText, Calendar as CalendarIcon } from 'lucide-react';
+import { API_ORIGIN } from '../utils/api';
 
 const Documents: React.FC = () => {
   const [reports, setReports] = React.useState<Array<{ _id: string; fileName?: string; summary: string; createdAt?: string }>>([]);
@@ -10,7 +11,7 @@ const Documents: React.FC = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await fetch('http://localhost:5000/api/reports', { credentials: 'include' });
+        const res = await fetch(`${API_ORIGIN}/api/reports`, { credentials: 'include' });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.error || 'Failed');
         setReports(data.reports || []);

@@ -20,11 +20,23 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
+const allowedOrigins = (process.env.CLIENT_URLS || 'http://localhost:5173')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
 
+if (isProduction) {
+    app.set('trust proxy', 1);
+}
 
-// ✅ CORS: allow credentials, restrict to unified frontend (5173)
+// ✅ CORS: allow credentials, restrict to configured frontends
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin(origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true
 }));
 
@@ -41,19 +53,27 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Session middleware setup
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+    console.warn('⚠️  SESSION_SECRET is missing. Set it in production.');
+}
+
 app.use(session({
-  secret: 'your-secret-key', // Use a strong secret, ideally from .env
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: false, // Set true if using HTTPS
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
-  }
+    secret: sessionSecret || 'fallback-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    }
 }));
 
-// Serve uploads statically for debug
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploads statically for local debugging only
+if (!isProduction) {
+    app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+}
 
 
 // ✅ Routes

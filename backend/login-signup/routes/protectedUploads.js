@@ -4,11 +4,11 @@ const fs = require('fs');
 const router = express.Router();
 
 // Basic session-based protection for serving files from uploads
-router.get('/:filename', (req, res) => {
+router.get('/*', (req, res) => {
   const isAuthed = !!(req.session && (req.session.userId || req.session.doctorId));
   if (!isAuthed) return res.status(401).json({ error: 'Not authenticated' });
 
-  const file = req.params.filename;
+  const file = req.params[0];
   const uploadsDir = path.join(__dirname, '..', 'uploads');
   const filePath = path.join(uploadsDir, file);
 

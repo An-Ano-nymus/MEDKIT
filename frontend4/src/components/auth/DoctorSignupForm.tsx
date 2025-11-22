@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
+import { API_ORIGIN } from '../../utils/api';
 
 interface DoctorSignupFormProps {
   onLoginClick: () => void;
@@ -60,7 +61,7 @@ const DoctorSignupForm: React.FC<DoctorSignupFormProps> = ({ onLoginClick }) => 
 
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/doctor/signup', {
+      const res = await fetch(`${API_ORIGIN}/api/doctor/signup`, {
         method: 'POST',
         body: form,
       });

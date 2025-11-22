@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Camera, RotateCw, Upload, FileText } from 'lucide-react';
 import Webcam from 'react-webcam';
+import { API_ORIGIN } from '../utils/api';
 
 const ReportScanner: React.FC = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -32,7 +33,7 @@ const handleAnalyzeImage = async (imageDataUrl: string | null) => {
     const formData = new FormData();
     formData.append('file', blob, 'report.jpg');
 
-    const response = await fetch('http://localhost:5000/analyze', {
+    const response = await fetch(`${API_ORIGIN}/analyze`, {
       method: 'POST',
       body: formData,
     });
@@ -76,7 +77,7 @@ const handleAnalyzeFile = async (file: File) => {
   formData.append('file', file);
 
   try {
-    const response = await fetch('http://localhost:5000/analyze', {
+    const response = await fetch(`${API_ORIGIN}/analyze`, {
       method: 'POST',
       body: formData,
     });
@@ -127,7 +128,7 @@ const handleAnalyzeFile = async (file: File) => {
     if (!results) return;
     try {
       setSaveStatus('Saving...');
-      const res = await fetch('http://localhost:5000/api/reports', {
+      const res = await fetch(`${API_ORIGIN}/api/reports`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

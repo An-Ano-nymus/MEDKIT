@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_ORIGIN } from '../utils/api';
 
 interface Doctor {
   _id: string;
@@ -29,7 +30,7 @@ const Appointments: React.FC = () => {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/doctors')
+    fetch(`${API_ORIGIN}/api/doctors`)
       .then(res => res.json())
       .then(data => setDoctors(data))
       .catch(err => console.error('Failed to fetch doctors:', err));
@@ -45,7 +46,7 @@ const Appointments: React.FC = () => {
     if (!phoneNumber) return;
     setBookingStatus('⏳ Sending OTP...');
     try {
-      const res = await fetch('http://localhost:5000/api/otp/send', {
+      const res = await fetch(`${API_ORIGIN}/api/otp/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phoneNumber })
@@ -66,7 +67,7 @@ const Appointments: React.FC = () => {
     if (!otp) return;
     setBookingStatus('⏳ Verifying OTP...');
     try {
-      const res = await fetch('http://localhost:5000/api/otp/verify', {
+      const res = await fetch(`${API_ORIGIN}/api/otp/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phoneNumber, otp })
@@ -95,7 +96,7 @@ const Appointments: React.FC = () => {
     setBookingStatus('⏳ Booking your appointment...');
 
     try {
-      const res = await fetch('http://localhost:5000/appointments/book', {
+      const res = await fetch(`${API_ORIGIN}/appointments/book`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_ORIGIN } from '../../utils/api';
 
 interface AppointmentItemProps {
   title: string;
@@ -48,7 +49,7 @@ const AppointmentsCard: React.FC = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await fetch('http://localhost:5000/appointments/user', { credentials: 'include' });
+        const res = await fetch(`${API_ORIGIN}/appointments/user`, { credentials: 'include' });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.error || 'Failed');
         // Map to display format; title is not in model, so construct a friendly title
